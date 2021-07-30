@@ -39,7 +39,15 @@ const {
 
 var isAncestor = function(genealogyTree, ancestor, descendant){
   // Tu código aca:
+  for (var i = 0; i < genealogyTree[ancestor].length; i++) {
+    var temp = genealogyTree[ancestor][i];
 
+    if(temp === descendant) return true;
+
+    if(genealogyTree[temp].length > 0) return isAncestor(genealogyTree, temp, descendant);
+  }
+
+  return false;
 }
 
 
@@ -77,7 +85,15 @@ var isAncestor = function(genealogyTree, ancestor, descendant){
 
 function secuenciaHenry(obj, n) {
   // Tu código aca:
+  var arr_props = Object.keys(obj);
 
+  if(n < 0) return null;
+
+  if(n === 0) return obj['first'];
+
+  if(n === 1) return arr_props.length;
+
+  if(n > 1) return secuenciaHenry(obj, n-1) * secuenciaHenry(obj, n-2) - secuenciaHenry(obj, n-2);
 }
 
 // ---------------------
@@ -98,7 +114,16 @@ function secuenciaHenry(obj, n) {
 
 LinkedList.prototype.size = function(){
   // Tu código aca:
+  if(!this.head) return 0;
 
+  var current = this.head, counter = 1;
+
+  while(current.next){
+    counter++;
+    current = current.next;
+  }
+
+  return counter;
 }
 
 
@@ -119,7 +144,25 @@ LinkedList.prototype.size = function(){
 
 LinkedList.prototype.switchPos = function(pos1, pos2){
   // Tu código aca:
+  if(this.size() < pos1 || this.size() < pos2) return false;
 
+  if(0 > pos1 || 0 > pos2) return false;
+
+  var current1 = this.head, current2 = this.head;
+
+  for(let i = 0; i < pos1; i++) {
+    current1 = current1.next;
+  }
+
+  for(let j = 0; j < pos2; j++) {
+    current2 = current2.next;
+  }
+
+  var temp = current1.value;
+  current1.value = current2.value;
+  current2.value = temp;
+
+  return true;
 }
 
 // EJERCICIO 5
@@ -135,7 +178,18 @@ LinkedList.prototype.switchPos = function(pos1, pos2){
 // Continuando con el nodo 2 de la lista 2, conectandose con el nodo 2 de la lista 2.
 var mergeLinkedLists = function(linkedListOne, linkedListTwo){
   // Tu código aca:
+  var newList = new LinkedList();
+  var current1 = linkedListOne.head, current2 = linkedListTwo.head;
 
+  while(current1 && current2){
+    newList.add(current1.value);
+    newList.add(current2.value);
+
+    current1 = current1.next;
+    current2 = current2.next;
+  }
+
+  return newList;
 }
 
 
@@ -183,7 +237,26 @@ var mergeLinkedLists = function(linkedListOne, linkedListTwo){
 
 var cardGame = function(playerOneCards, playerTwoCards){
   // Tu código aca:
+  var castleP1 = 100, castleP2 = 100;
 
+  while(playerOneCards.size() !== 0){
+    var cardsP1 = playerOneCards.dequeue(), cardsP2 = playerTwoCards.dequeue();
+
+    var attackP1 = cardsP1["attack"], defenseP1 = cardsP1["defense"];
+    var attackP2 = cardsP2["attack"], defenseP2 = cardsP2["defense"];
+
+    if(attackP1 > defenseP2) castleP2 += defenseP2 - attackP1;
+
+    if(defenseP1 < attackP2) castleP1 += defenseP1 - attackP2;
+
+    if(castleP1 <= 0 || castleP2 <= 0) break;
+  }
+
+  if(castleP1 > castleP2) return 'PLAYER ONE';
+
+  else if(castleP1 < castleP2) return 'PLAYER TWO';
+
+  else return 'TIE';
 }
 
 // ---------------
@@ -207,7 +280,13 @@ var cardGame = function(playerOneCards, playerTwoCards){
 
 BinarySearchTree.prototype.height = function(){
   // Tu código aca:
+  if(!this.left && !this.right) return 1;
 
+  if(this.left && !this.right) return 1 + this.left.height();
+
+  else if(!this.left && this.right) return 1 + this.right.height();
+
+  else return Math.max(1 + this.left.height(), 1 + this.right.height());
 }
 
 
@@ -229,7 +308,19 @@ BinarySearchTree.prototype.height = function(){
 
 var binarySearch = function (array, target) {
   // Tu código aca:
+  var firstE = 0, lastE = array.length -1;
 
+  while(firstE <= lastE){
+    var middle = Math.floor((firstE + lastE) / 2)
+
+    if(array[middle] === target) return middle;
+
+    else if(array[middle] > target) lastE = middle - 1;
+
+    else firstE = middle + 1;
+  }
+
+  return -1;
 }
 
 // EJERCICIO 9
@@ -257,7 +348,22 @@ var binarySearch = function (array, target) {
 
 var specialSort = function(array, orderFunction) {
   // Tu código aca:
+  var swapped = true;
 
+  while(swapped){
+    swapped = false;
+
+    for(let i = 0; i < array.length - 1; i++){
+      if(orderFunction(array[i], array[i + 1]) === -1){
+        var aux = array[i];
+        array[i] = array[i + 1];
+        array[i + 1] = aux;
+        swapped = true;
+      }
+    }
+  }
+
+  return array;
 }
 
 // ----- Closures -----
@@ -290,7 +396,15 @@ var specialSort = function(array, orderFunction) {
 
 function closureDetect(symptoms, min) {
   // Tu código aca:
+  return function(person){
+    var counter = 0, personSyms = person.symptoms;
 
+    for(let i = 0; i < symptoms.length; i++){
+      if(symptoms.includes(personSyms[i])) counter++;
+    }
+
+    return counter >= min;
+  }
 }
 
 // -------------------

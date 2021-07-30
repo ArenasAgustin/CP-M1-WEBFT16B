@@ -239,17 +239,16 @@ var cardGame = function(playerOneCards, playerTwoCards){
   // Tu código aca:
   var castleP1 = 100, castleP2 = 100;
 
-  while(playerOneCards.size() !== 0){
-    var cardsP1 = playerOneCards.dequeue(), cardsP2 = playerTwoCards.dequeue();
+  while(playerOneCards.size() > 0 && castleP1 > 0 && castleP2 > 0){
+    var card1P1 = playerOneCards.dequeue(), card1P2 = playerTwoCards.dequeue();
+    var card2P1 = playerOneCards.dequeue(), card2P2 = playerTwoCards.dequeue();
 
-    var attackP1 = cardsP1["attack"], defenseP1 = cardsP1["defense"];
-    var attackP2 = cardsP2["attack"], defenseP2 = cardsP2["defense"];
+    var attackP1 = card1P1["attack"], defenseP1 = card2P1["defense"];
+    var attackP2 = card1P2["attack"], defenseP2 = card2P2["defense"];
 
     if(attackP1 > defenseP2) castleP2 += defenseP2 - attackP1;
 
     if(defenseP1 < attackP2) castleP1 += defenseP1 - attackP2;
-
-    if(castleP1 <= 0 || castleP2 <= 0) break;
   }
 
   if(castleP1 > castleP2) return 'PLAYER ONE';
